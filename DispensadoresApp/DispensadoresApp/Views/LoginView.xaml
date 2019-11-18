@@ -14,10 +14,18 @@
         <FlexLayout Direction="Column" VerticalOptions="StartAndExpand" HorizontalOptions="Center" JustifyContent="SpaceAround">
             <Image Source="javeriana.png" HeightRequest="80" VerticalOptions="Start"></Image>
             <Label Text="Servicio de prestamo de equipos" FontSize="20" FontAttributes="Bold" HorizontalTextAlignment="Center" TextColor="white"/>
-            <Entry Placeholder="Nombree" Text="{Binding User_Name}" Margin="80,20,80,0" TextColor="white" PlaceholderColor="White"></Entry>
+            <Entry Placeholder="Usuario" Text="{Binding User}" Margin="80,20,80,0" TextColor="white" PlaceholderColor="White"></Entry>
             <Entry Placeholder="Contraseña" IsPassword="true" Text="{Binding Password}" Margin="80,20,80,0" TextColor="white" PlaceholderColor="White"></Entry>
+            <Picker x:Name="picker" 
+                Title="Seleccione una Empresa" 
+                ItemsSource="{Binding ListaEmpresas}"
+                ItemDisplayBinding="{Binding Nombre}"
+                SelectedItem="{Binding EmpresaSeleccionada}"/>
+            <Label Text="{Binding EmpresaSeleccionada.Id_Empresa}" IsVisible="True" x:Name="TxtId" Margin="0,100,0,0"/>
+            <Label Text="{Binding EmpresaSeleccionada.Nombre}" IsVisible="True" x:Name="TxtName"/>
             <Button Text="Login" Command="{Binding LoginCommand}" Margin="100,20,100,0" CornerRadius="20" BorderColor="#153249" BackgroundColor="White" TextColor="#153249" BorderWidth="3"></Button>
             <Image Source="logo.png" HeightRequest="80" VerticalOptions="End"></Image>
+            
         </FlexLayout>
     </ContentPage.Content>
 </ContentPage>

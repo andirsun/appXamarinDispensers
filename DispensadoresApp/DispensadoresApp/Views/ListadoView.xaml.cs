@@ -1,5 +1,5 @@
 ﻿using DispensadoresApp.Modelos;
-using DispensadoresApp.ViewModel;
+using DispensadoresApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +14,11 @@ namespace DispensadoresApp.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ListadoView : ContentPage
     {
-        public ListadoView(TipoElementoModelo tipoElemento)
+        ListadoViewModel context = new ListadoViewModel();
+        public ListadoView()
         {
             InitializeComponent();
-            TipoLista.ItemsSource = tipoElemento.Elementos;
+            BindingContext = context;
         }
     }
 }

@@ -36,8 +36,10 @@ namespace DispensadoresApp.Servicios
                     {
                         string token = Application.Current.Properties["token"] as string;
                         string id = Application.Current.Properties["UserID"] as string;
-                        requestMessage.Headers.Add("Authorization", token);
-                        requestMessage.Headers.Add("UserID", id);
+                        string fulltoken = "Bearer " + token;
+                        string fullid = "ID " + id;
+                        requestMessage.Headers.Add("Authorization",fulltoken);
+                        requestMessage.Headers.Add("UserID",fullid);
                     }
                     
                     //client.Timeout = TimeSpan.FromSeconds(10);

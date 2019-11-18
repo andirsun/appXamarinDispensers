@@ -4,9 +4,17 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:converters="clr-namespace:DispensadoresApp.Converters;assembly=DispensadoresApp"
+             
              x:Class="DispensadoresApp.Views.MapaView"
              BackgroundImageSource="fondo.png"
              NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ImageConverter x:Key="ImageConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.ToolbarItems >
         <ToolbarItem IconImageSource="user.png"></ToolbarItem>
     </ContentPage.ToolbarItems>
@@ -24,8 +32,9 @@
                 
             </StackLayout>
             <BoxView  HeightRequest="3" Color="White" Grid.Row="1"></BoxView>
-            
-            <Image Source="mapa.jpg" Grid.Row="2"></Image>
+
+            <Image  Grid.Row="2" Source="{Binding UrlImagen, Converter={StaticResource ImageConverter}}"/>
+            <!--<Image Source="mapa.jpg" Grid.Row="2"></Image>-->
         </Grid>
         
     </ContentPage.Content>

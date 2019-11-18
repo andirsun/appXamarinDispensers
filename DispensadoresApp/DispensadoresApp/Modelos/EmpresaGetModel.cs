@@ -10,7 +10,8 @@ namespace DispensadoresApp.Modelos
         [JsonProperty("id")]
         public string Id { get; set; }
 
-        [JsonProperty("nombre")]
-        public string Nombre { get; set; }
+        [JsonProperty("tiempoMaxReserva")]
+        public string tiempoMaxReserva { get; set; }
+    
     }
 }

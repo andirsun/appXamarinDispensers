@@ -5,44 +5,31 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using DispensadoresApp.ViewModels;
 using SQLite;
 
 namespace DispensadoresApp.Modelos
 {
-    public class DispensadorModelo : INotifyPropertyChanged
+    public class DispensadorModelo : NotificationObject
     {
-
-        //Constructor
-        #region Constructors
-        public DispensadorModelo() { }
-        public DispensadorModelo(string nombre, double latitud, double longitud, List<ElementoModelo> elementos)
-        {
-            this.Nombre = nombre;
-            this.Latitud = latitud;
-            this.Longitud = longitud;
-            this.Distancia = 10;
-            this.Elementos = elementos;
-
-        }
-
-        #endregion
-
         //Atributos
         #region Atributes
         [PrimaryKey, AutoIncrement]//Id of DB 
         public int ID { get; set; }
         [JsonProperty("idDispensador")] 
-        public string idDispensador;
+        private string idDispensador;
         [JsonProperty("nombre")]
-        public string nombre;
+        private string nombre;
         [JsonProperty("latitud")]
-        public double latitud;
+        private double latitud;
         [JsonProperty("longitud")]
-        public double longitud;
+        private double longitud;
         [JsonProperty("id")]
-        public long id_Dispensador;
-        public double distancia;
-        public List<ElementoModelo> elementos;
+        private int id_Dispensador;
+        [JsonProperty("numEquipos")]
+        private int numEquipos;
+        private double distancia;
+        private List<ElementoModelo> elementos;
         #endregion
         
         //Métodos
@@ -51,6 +38,11 @@ namespace DispensadoresApp.Modelos
         {
             get { return nombre; }
             set { nombre = value; OnPropertyChanged(); }
+        }
+        public int NumEquipos
+        {
+            get { return numEquipos; }
+            set { numEquipos = value;OnPropertyChanged(); }
         }
         public double Latitud
         {
@@ -62,7 +54,7 @@ namespace DispensadoresApp.Modelos
             get { return longitud; }
             set { longitud = value; OnPropertyChanged(); }
         }
-        public long Id_Dispensador
+        public int Id_Dispensador
         {
             get { return id_Dispensador; }
             set { id_Dispensador = value; OnPropertyChanged(); }
@@ -79,12 +71,5 @@ namespace DispensadoresApp.Modelos
             set { elementos = value; OnPropertyChanged(); }
         }
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string nombre = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nombre));
-        }
-
     }
 }

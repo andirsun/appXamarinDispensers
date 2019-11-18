@@ -1,6 +1,7 @@
 ﻿using DispensadoresApp.Modelos;
 using DispensadoresApp.Models;
-using DispensadoresApp.ViewModel;
+using DispensadoresApp.Servicios.Navegacion;
+using DispensadoresApp.ViewModels;
 using Plugin.Geolocator;
 using System;
 using System.Collections.Generic;
@@ -17,19 +18,20 @@ namespace DispensadoresApp.Views
     public partial class DispensadorView : ContentPage
     {
         DispensadorViewModel context = new DispensadorViewModel();
-        public DispensadorView(UsuarioModelo usuario)
+        public DispensadorView()
         {
             InitializeComponent();
-            BindingContext =context;
+            BindingContext = context;
 
         }
 
-        /*
-        private async void OnItemSelect(Object sender, ItemTappedEventArgs e)
+        /*private  async void OnItemSelect(Object sender, ItemTappedEventArgs e)
         {
             var dispensador = e.Item as DispensadorModelo;
-            await Navigation.PushAsync(new DetalleDispensador(dispensador));
-        }
-        */
+
+            //await Navigation.PushAsync(new DetalleDispensadorView(dispensador));
+            TipoElementoModelo model;
+            await Navigation.PushAsync(new ListadoView());
+        }*/
     }
 }

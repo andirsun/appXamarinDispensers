@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DispensadoresApp.ViewModel;
+using DispensadoresApp.ViewModels;
 using System.Threading.Tasks;
 
 

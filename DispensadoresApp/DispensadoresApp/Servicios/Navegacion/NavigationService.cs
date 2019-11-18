@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Globalization;
 using System.Reflection;
 using System.Threading.Tasks;
-using DispensadoresApp.ViewModel;
+using DispensadoresApp.ViewModels;
 using DispensadoresApp.Views;
 using Xamarin.Forms;
-
 using Rg.Plugins.Popup.Services;
 using Rg.Plugins.Popup.Pages;
 
@@ -27,7 +24,8 @@ namespace DispensadoresApp.Servicios.Navegacion
 
         public Task InitializeAsync()
         {
-            if (Application.Current.Properties.ContainsKey("token"))
+            var propertie = Application.Current.Properties.ContainsKey("token");
+            if (propertie)
             {
                 return NavigateToAsync<DispensadorViewModel>(); //si esta definido el guardado el token debera ir a la pagina de los dispensadores
             }
@@ -110,16 +108,6 @@ namespace DispensadoresApp.Servicios.Navegacion
             await PopupNavigation.Instance.PopAsync();
         }
 
-        private Page CreatePage(Type viewModelType)
-        {
-            Type pageType = GetPageTypeForViewModel(viewModelType);
-            if (pageType == null)
-            {
-                throw new Exception($"Cannot locate page type for {viewModelType}");
-            }
-            Page page = Activator.CreateInstance(pageType) as Page;
-            return page;
-        }
         private Type GetPageTypeForViewModel(Type viewModelType, bool isPopUp = false)
         {
             var viewName = viewModelType.FullName.Replace("Model", string.Empty);
@@ -133,7 +121,26 @@ namespace DispensadoresApp.Servicios.Navegacion
             var viewType = Type.GetType(viewAssemblyName);
             return viewType;
         }
-        
+        private Page CreatePage(Type viewModelType)
+        {
+            Type pageType = GetPageTypeForViewModel(viewModelType);
+            if (pageType == null)
+            {
+                throw new Exception($"Cannot locate page type for {viewModelType}");
+            }
+            try
+            {
+                Page page = Activator.CreateInstance(pageType) as Page;
+                return page;
+            }
+            catch(Exception e)
+            {
+                var x = e;
+                return new Page();
+            }
+            
+            
+        }
 
         public async Task GoBackAsync()
         {

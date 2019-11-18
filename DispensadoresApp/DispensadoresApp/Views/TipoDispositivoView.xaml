@@ -1,19 +1,27 @@
-﻿ ﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="DispensadoresApp.Views.TipoDispositivoView"
+             xmlns:converters="clr-namespace:DispensadoresApp.Converters;assembly=DispensadoresApp"
+             xmlns:components="clr-namespace:DispensadoresApp.Views.Components;assembly=DispensadoresApp"
              BackgroundImageSource="fondo.png"
              NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ImageConverter x:Key="ImageConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.ToolbarItems >
         <ToolbarItem IconImageSource="user.png"></ToolbarItem>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
-
+        
         <Grid VerticalOptions="Center" HorizontalOptions="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
@@ -42,21 +50,24 @@
 
             </StackLayout>
 
-            <ListView ItemsSource="{Binding Tipo_Elemento}" HorizontalOptions="Center"  Grid.Column="0" Grid.Row="3"
-                      HeightRequest="400" Margin="15,0,15,0"  Grid.ColumnSpan="2" RowHeight="110" 
-                      ItemTapped="ListView_ItemTapped">
-                <ListView.ItemTemplate>
+
+
+            <components:CustomListView ItemsSource="{Binding DispositivosDisponibles}" HasUnevenRows="True"  HorizontalOptions="Center" 
+                                       Grid.Column="1" Grid.Row="3" HeightRequest="400" Margin="15,0,15,0"  Grid.ColumnSpan="2" RowHeight="110" 
+                                       ItemClickCommand="{Binding CommandListadoView }">
+                <components:CustomListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell Tapped="ViewCell_Tapped">
+                        <ViewCell >
                             <FlexLayout AlignItems="End" HorizontalOptions="Center" >
-                                <ImageButton Source="lapto.png" WidthRequest="100" BackgroundColor="Transparent"></ImageButton>
-                                <Button Text="{Binding TotalDisponibles}" TextColor="White" WidthRequest="30" HeightRequest="30" BorderRadius="20" FontSize="8" BackgroundColor="red"></Button>
-                                <Label TextColor="White" Text="{Binding Nombre}"></Label>
+                                <Image Source="{Binding PathImagen, Converter={StaticResource ImageConverter}}"/>
+                                
+                                <Button Text="{Binding Cantidad}" TextColor="White" WidthRequest="47" HeightRequest="40" BorderRadius="20" FontSize="15" BackgroundColor="red"></Button>
+                                <Label TextColor="White" FontSize="15" Text="{Binding Nombre}"></Label>
                             </FlexLayout>
                         </ViewCell>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </components:CustomListView.ItemTemplate>
+            </components:CustomListView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

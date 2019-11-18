@@ -7,8 +7,13 @@ namespace DispensadoresApp
     public class GlobalSettings
     {
         public static readonly string BASE_URL = "https://pruebasreplica3.javerianacali.edu.co/ServiciosDispensadores";
+        public static readonly string BASE_URL_IMG = "https://pruebasreplica3.javerianacali.edu.co/AppDispensadoresPortatiles/javax.faces.resource/";
+        public static readonly string BASE_URL_IMG_EMPRESA = "https://pruebasreplica3.javerianacali.edu.co/AppDispensadoresPortatiles/javax.faces.resource/images/mapas/";
+
+        
         public static readonly string TOKEN = "";
         public static readonly string LOGIN_URL = "/login";
+        public static readonly string ELEMENTOS = "/elementos/";
         public static readonly string LISTAR_EMPRESAS = "/empresas";
         public static readonly string TIEMPO_MAX_RESERVA = "/tiempo/";
         public static readonly string CASILLAS_DISPENSADOR = "/ubicaciones/";

@@ -4,234 +4,151 @@ using DispensadoresApp.Servicios;
 using DispensadoresApp.Servicios.ApiRest;
 using DispensadoresApp.Servicios.Rest;
 using DispensadoresApp.Servicios.BaseDatos;
-using DispensadoresApp.Servicios.Geolocalizacion;
-using DispensadoresApp.Servicios.Navegacion;
 using DispensadoresApp.Views;
-
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms;
-using System.Net.Http;
-using Newtonsoft;
 using Newtonsoft.Json;
+using Xamarin.Forms;
+using Rg.Plugins.Popup.Services;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using Xamarin.Essentials;
 
-namespace DispensadoresApp.ViewModel
+namespace DispensadoresApp.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
         #region Atributos 
         private UsuarioModelo usuario;
-        public List<DispensadorModelo> Dispensadores { get; set; }
+        public string User { get; set; }
+        public string Password { get; set; }
+        private ObservableCollection<EmpresaModelo> listaEmpresas;
+        private EmpresaModelo empresaSeleccionada;
+ 
         #endregion
 
         #region Servicios
-        private readonly LoginApiRest servicio_Login;
-        private readonly DispensadorApiRest servicio_Dispensador;
-        private readonly UsuarioDB servicio_BD_Cliente;
-        public PostService<UsuarioPostModel> servicioPostLogin;
-        public GetService<string> servicioGetTipoEquipo;
-        public GetService<EmpresaModelo> getEmpresa;
-        public GetService<DispensadorModelo> getDispensadores;
-        public GetService<UbicacionModelo> getUbicaciones;
+        public PostService<UsuarioPostModel> servicioPostLogin { get; set; }
+        public GetService<string> servicioGetTipoEquipo { get; set; }
+        public GetService<EmpresaModelo> getEmpresa { get; set; }
+        public GetService<DispensadorModelo> getDispensadores { get; set; }
+        
+
 
         #endregion
 
+        #region Commands
+        public Command PopUpCommandView { get; set; }
+        public Command ReservarCommand { get; set; }
+        public Command LoginCommand { get; set; }
+        #endregion
         #region Getters/Setters
+        public EmpresaModelo EmpresaSeleccionada
+        {
+            get { return empresaSeleccionada; }
+            set { empresaSeleccionada = value; OnPropertyChanged(); }
+        }
         public UsuarioModelo Usuario
         {
             get { return usuario; }
-            set { usuario = value; }
+            set { usuario = value; OnPropertyChanged(); }
         }
-
+        public ObservableCollection<EmpresaModelo> ListaEmpresas
+        {
+            get { return listaEmpresas; }
+            set { listaEmpresas = value;
+                  OnPropertyChanged();
+                }
+        }
         #endregion
 
         #region Constructor
         public LoginViewModel()
         {
-            Usuario = new UsuarioModelo();
-            #region Inicializar Servicios
-            servicio_Login = new LoginApiRest();
-            servicio_Dispensador = new DispensadorApiRest();
-            servicio_BD_Cliente = new UsuarioDB();
             
-            #endregion
-
-            #region Inicializar Commands
+            Usuario = new UsuarioModelo();
             LoginCommand = new Command(async () => await Login(), () => true);
-            #endregion
+            ReservarCommand = new Command(async () => await ClosePopUp(), () => true);
+            PopUpCommandView = new Command(async () => await PopUpView(), () => true);
+
+            
+             
         }
-        #endregion
-
-        #region Commands
-        public Command LoginCommand { get; set; }
-        #endregion
-
-
-        
-        private async Task tipoEquipo()
+        public override  async Task InitializeAsync(object navigationData)
         {
-            var url = GlobalSettings.BASE_URL + GlobalSettings.BUSQUEDA_TIPO_EQUIPO;
-            var idEmpresa = "1";
-            var urlParams = url + idEmpresa;//id empresa
-            var tipoEquipo = new TipoElementoModelo();
-            servicioGetTipoEquipo = new GetService<string>(urlParams);
-            Tuple<bool, string> ans = await servicioGetTipoEquipo.SendRequest("");
-            if (!ans.Item1)
-            {
-                List<TipoElementoModelo> equipos = JsonConvert.DeserializeObject<List<TipoElementoModelo>>(ans.Item2);
-                //////////////Preguntar Por que no funciona Asi serializando en una lista 
-           
-            }
+            await listarEmpresas();
+            
         }
+
+        #endregion
         private async Task listarEmpresas()
         {
             var url = GlobalSettings.BASE_URL + GlobalSettings.LISTAR_EMPRESAS;
             var empresa = new EmpresaModelo();
             var getEmpresa = new GetService<EmpresaModelo>(url);
             Tuple<bool, string> ans = await getEmpresa.SendRequest(empresa);
-            if (!ans.Item1)
+            if (ans.Item1)
             {
-                EmpresaModelo empresas = JsonConvert.DeserializeObject<EmpresaModelo>(ans.Item2);
-                //////////////Preguntar Por que no funciona Asi serializando en una lista 
-                //List<EmpresaModelo> empresas = JsonConvert.DeserializeObject<EmpresaModelo>(ans.Item2);
+                List<EmpresaModelo> empresas = JsonConvert.DeserializeObject<List<EmpresaModelo>>(ans.Item2);
+                ListaEmpresas = new ObservableCollection<EmpresaModelo>(empresas);
+                
             }
 
         }
-        private async Task listarDispensadores()
-        {
-            var param1 = "1";
-            var param2 = "2";
-            var url = GlobalSettings.BASE_URL + GlobalSettings.DISPENSADORES_URL+param1+param2;
-            var dispensador = new DispensadorModelo();
-            var getDispensador = new GetService<DispensadorModelo>(url);
-            Tuple<bool, string> ans = await getDispensador.SendRequest(dispensador);
-            if (!ans.Item1)
-            {
-                DispensadorModelo dispensadores = JsonConvert.DeserializeObject<DispensadorModelo>(ans.Item2);
-                //////////////Preguntar Por que no funciona Asi serializando en una lista 
-            }
-
-        }
-        private async Task tipoEquipoDisponiblexUSER()
-        {
-            var userId = "2";//User id
-            var url = GlobalSettings.BASE_URL;
-            var parameters = GlobalSettings.TIPO_EQUIPO_DISPONIBLE_USUARIO + userId;
-            var tipoEquipo = new TipoElementoModelo();
-            servicioGetTipoEquipo = new GetService<string>(url);
-            Tuple<bool, string> ans = await servicioGetTipoEquipo.SendRequest(parameters);
-            if (!ans.Item1)
-            {
-                TipoElementoModelo equipos = JsonConvert.DeserializeObject<TipoElementoModelo>(ans.Item2);
-                //////////////Preguntar Por que no funciona Asi serializando en una lista 
-
-            }
-
-        }
-        private async Task ubicacionesCasilleros()
-        {
-            var idDispensador = "1";
-            var url = GlobalSettings.BASE_URL + GlobalSettings.CASILLAS_DISPENSADOR + idDispensador;
-            var ubicacion = new UbicacionModelo();
-            getUbicaciones = new GetService<UbicacionModelo>(url);
-            Tuple<bool, string> ans = await getUbicaciones.SendRequest(ubicacion);
-            if (!ans.Item1)
-            {
-                UbicacionModelo ubicaciones = JsonConvert.DeserializeObject<UbicacionModelo>(ans.Item2);
-                //////////////Preguntar Por que no funciona Asi serializando en una lista 
-
-            }
-
-        }
-
-        private async Task tiempoMaxReserva() /*PREGUNTAR SI SE CREA UN MODELO APARTE SOLO PARA tiempo maximo de reserva*/
-        {
-            var idDispensador = "1";
-            var url = GlobalSettings.BASE_URL + GlobalSettings.TIEMPO_MAX_RESERVA + idDispensador;
-            var ubicacion = new UbicacionModelo();
-            getUbicaciones = new GetService<UbicacionModelo>(url);
-            Tuple<bool, string> ans = await getUbicaciones.SendRequest(ubicacion);
-            if (!ans.Item1)
-            {
-                UbicacionModelo ubicaciones = JsonConvert.DeserializeObject<UbicacionModelo>(ans.Item2);
-                //////////////Preguntar Por que no funciona Asi serializando en una lista 
-
-            }
-
-        }
+        
         private async Task Login()
         {
             
             var urlLogin = GlobalSettings.BASE_URL + GlobalSettings.LOGIN_URL;
             var userLogin = new UsuarioPostModel();
-            userLogin.UserName = "Pepe";
-            userLogin.Password = "1234";
-            userLogin.IdEmpresa = 1;
+            userLogin.UserName = User;
+            userLogin.Password = Password;
+            userLogin.IdEmpresa = EmpresaSeleccionada.Id_Empresa;
             servicioPostLogin = new PostService<UsuarioPostModel>(urlLogin);
             Tuple<bool, string> ans = await servicioPostLogin.SendRequest(userLogin);//Working
-            if (!ans.Item1)
+            var response = ans.Item1;
+            if (response)
             {
+                //Login Sucess
                 UsuarioModelo user = JsonConvert.DeserializeObject<UsuarioModelo>(ans.Item2);
-                Application.Current.Properties["token"] = "Bearer "+ user.Api_token;
-                Application.Current.Properties["UserID"] ="ID " + user.ID;
-                Application.Current.Properties["idEmpresa"] = "ID ";//GUARDAR DESPUES DE QUE EL LOGIN SEA EXIROSO
-
+                await PersistenceDataAsync("token",user.Api_token);
+                await PersistenceDataAsync("UserID",user.Id_Usuario);
+                await PersistenceDataAsync("UserName",user.Nombre);
+                await PersistenceDataAsync("idEmpresa", userLogin.IdEmpresa);
+                await PersistenceDataAsync("urlImagen",EmpresaSeleccionada.PathImagenMapa);
+                await NavigationService.NavigateToAsync<DispensadorViewModel>();
+                 
+                await NavigationService.RemoveLastFromBackStackAsync();
             }
-
-
-            var r = 1;
-
-            //Application.Current.MainPage = new NavigationPage(new DispensadorView(Usuario)); ///Redirecting to another page after login
-            await NavigationService.NavigateToAsync<TipoDispositivoViewModel>();
-            await NavigationService.RemoveLastFromBackStackAsync();
-
-            
-
-
-
-
-
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Error en sus credenciales", "OK");
+                //await PopUpView(); //Desplega mensaje de Logeo fallido
+                
+            }                      
+        }
+        public async Task PersistenceDataAsync(string key, object value)//guarda en memoria segura los datos de Logeo
+        {
             try
             {
-                var location = await Geolocation.GetLastKnownLocationAsync();
-
-                if (location != null)
-                {
-                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-                    var nose = new Geolocalizacion(location.Latitude, location.Longitude);
-                    var distancia = nose.distanceBetween(3.381991, -76.518472);
-                    var distancia2 = nose.Calcular();
-
-
-                }
+                var stringValue = value.ToString();
+                await SecureStorage.SetAsync(key, stringValue);
             }
-            catch (FeatureNotSupportedException fnsEx)
+            catch (Exception)
             {
-                // Handle not supported on device exception
 
             }
-            catch (FeatureNotEnabledException fneEx)
-            {
-                // Handle not enabled on device exception
-            }
-            catch (PermissionException pEx)
-            {
-                // Handle permission exception
-            }
-            catch (Exception ex)
-            {
-                // Unable to get location
-            }
+            Application.Current.Properties[key] = value;
+        }
 
-            //var usuarioAgregado = await servicio_BD_Cliente.AgregarUsuario(Usuario);
-            //var usuarioLogueado = await servicio_Login.LoginUsuario(Usuario);
-           
-            
-            //var navigationStack = navigation.NavigationStack;//Pendiente por preguntar
-            //navigation.RemovePage(navigationStack[navigationStack.Count - 2]); //Pendiente por preguntar
+        private async Task ClosePopUp()
+        {
+            await PopupNavigation.Instance.PopAsync();
+        }
+        private async Task PopUpView()
+        {
+
+            await PopupNavigation.PushAsync(new FailLogin());
         }
     }
 }

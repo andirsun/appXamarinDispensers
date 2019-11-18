@@ -1,14 +1,12 @@
 ﻿using DispensadoresApp.Servicios.BaseDatos;
-using DispensadoresApp.Views;
 using DLToolkit.Forms.Controls;
-using DispensadoresApp.ViewModels;
 using DispensadoresApp.Servicios.Navegacion;
+using DispensadoresApp.Modelos;
 using System;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using DLToolkit.Forms.Controls;
 using System.IO;
-using DispensadoresApp.Servicios.BaseDatos;
+using DispensadoresApp.Views;
+using DispensadoresApp.Servicios.Handlers;
 
 namespace DispensadoresApp
 {
@@ -16,14 +14,14 @@ namespace DispensadoresApp
     {
         private static DataBase db;
         static INavigationService navigationService;
+        Models.UsuarioModelo user;
+        static LoadDataHandler LoadData;
         public App()
         {
+
             InitializeComponent();
             FlowListView.Init();
-            MainPage = new NavigationPage(new LoginView())
-            {
-                BarBackgroundColor = Color.FromHex("#153249")
-            };
+            LoadData = new LoadDataHandler();
         }
 
         public static DataBase dataBase
@@ -48,9 +46,21 @@ namespace DispensadoresApp
                 return navigationService;
             }
         }
-        protected override void OnStart()
+        
+        private void InitNavigation()
         {
-            // Handle when your app starts
+            NavigationService.InitializeAsync();
+        }
+        protected override async void OnStart()
+        {
+            await LoadData.LoadData("token");
+            await LoadData.LoadData("UserID");
+            await LoadData.LoadData("UserName");
+            await LoadData.LoadData("idEmpresa");
+            await LoadData.LoadData("urlImagen");
+
+            InitNavigation();
+
         }
 
         protected override void OnSleep()
@@ -58,9 +68,14 @@ namespace DispensadoresApp
             // Handle when your app sleeps
         }
 
-        protected override void OnResume()
+        protected override async void OnResume()
         {
-            // Handle when your app resumes
+            await LoadData.LoadData("token");
+            await LoadData.LoadData("UserID");
+            await LoadData.LoadData("UserName");
+            await LoadData.LoadData("idEmpresa");
+            await LoadData.LoadData("urlImagen");
+
         }
     }
 }

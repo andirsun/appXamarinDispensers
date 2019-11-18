@@ -17,7 +17,8 @@
         <Grid VerticalOptions="FillAndExpand" HorizontalOptions="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="2"></RowDefinition>
+                <RowDefinition Height="2"/>
+                <RowDefinition Height="6*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -32,29 +33,27 @@
 
             <BoxView Margin="15,0,15,0" HeightRequest="3" Color="White" Grid.Row="1"  Grid.ColumnSpan="2" Grid.Column="0"></BoxView>
 
-
-
-            <flv:FlowListView FlowColumnCount="2" SeparatorVisibility="None" HasUnevenRows="false"  Grid.ColumnSpan="2" Grid.Column="0"
-	FlowItemTapped="OnItemSelect" FlowItemsSource="{Binding Dispensadores  }"  Grid.Row="2" RowHeight="190" Margin="12">
-
+            <flv:FlowListView FlowColumnCount="2" SeparatorVisibility="None" HasUnevenRows="false"  Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Column="0"
+	                           FlowItemTappedCommand="{Binding DispensadorCommandView}" FlowItemsSource="{Binding Dispensadores}"  Grid.Row="2" RowHeight="190" Margin="20">
                 <flv:FlowListView.FlowColumnTemplate>
                     <DataTemplate>
-                        <StackLayout HorizontalOptions="Center" VerticalOptions="Fill"
-                                     Orientation="Vertical" >
-                            <Label Text="{Binding Nombre  }" TextColor="white"/>
+                        <StackLayout HorizontalOptions="Center" VerticalOptions="Fill" Orientation="Vertical" >
+                            <Label Text="{Binding Nombre}" TextColor="white"/>
                             <FlexLayout AlignItems="End" HorizontalOptions="Center">
                                 <Image Source="dispensadorPeque.png" HeightRequest="130"></Image>
-                                <Button Text="{Binding Capacidad}" TextColor="White" WidthRequest="30" HeightRequest="30" BorderRadius="20" FontSize="8" BackgroundColor="red"></Button>
+                                <Button Text="{Binding NumEquipos}" TextColor="White" WidthRequest="40"  HeightRequest="36" BorderRadius="20" FontSize="12" BackgroundColor="red"></Button>
                             </FlexLayout>
-
                             <Label Text="{Binding Distancia, StringFormat= 'Distancia: {0} m'}" TextColor="white"/>
+                            <Label Text="distancia" TextColor="white"/>
+                            
                         </StackLayout>
                     </DataTemplate>
                 </flv:FlowListView.FlowColumnTemplate>
-
             </flv:FlowListView>
 
-            <!--<Label WidthRequest="6" Text="Actualmente hay 10 equipos disponibles" VerticalOptions="End" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" BackgroundColor="Coral" TextColor="White"></Label>-->
+            <StackLayout BackgroundColor="#153249" Grid.Column="0" Grid.Row="4"  Grid.ColumnSpan="2" HeightRequest="2" Margin="0,0,0,10">
+                <Label Text="{Binding NumeroTotalEquipos,StringFormat='El numero Total de equipos es {0}'}" TextColor="White" HorizontalOptions="Center"></Label>
+            </StackLayout>
         </Grid>
     </ContentPage.Content>
 </ContentPage> 

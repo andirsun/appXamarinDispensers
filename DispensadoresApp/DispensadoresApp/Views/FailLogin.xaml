@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<popup:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:popup="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  x:Class="DispensadoresApp.Views.FailLogin"
+                 NavigationPage.HasNavigationBar="False">
+    <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0" Margin="0">
+        <Frame Margin="0" Padding="15" BackgroundColor="white" CornerRadius="40" BorderColor="Blue" >
+            <Frame.Content>
+                <StackLayout Padding="15" Margin="2" >
+
+                    <Label Text="Datos Incorrectos" TextColor="#153249"></Label>
+                    <StackLayout Orientation="Horizontal">
+                        <Button Text="Ok" BackgroundColor="#43a559" Command="{Binding ReservarCommand}"  TextColor="White" CornerRadius="40"></Button>
+                    </StackLayout>
+                </StackLayout>
+            </Frame.Content>
+        </Frame>
+    </StackLayout>
+
+</popup:PopupPage>
+            
+    
+  

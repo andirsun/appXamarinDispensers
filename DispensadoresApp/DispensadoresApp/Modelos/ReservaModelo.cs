@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SQLite;
+using DispensadoresApp.ViewModels;
 
 namespace DispensadoresApp.Modelos
 {
-    public class ReservaModelo
+    public class ReservaModelo : NotificationObject
     {
         public ReservaModelo()//constructor 
         {
@@ -16,28 +17,31 @@ namespace DispensadoresApp.Modelos
         #region Atributos
         [PrimaryKey, AutoIncrement]//Id of DB 
         public int ID { get; set; }
-        public long id_Reserva;
+        
         [JsonProperty("idUsuario")]
-        public long id_Usuario;
-        [JsonProperty("idEmpresas")]
-        public long id_Empresa;
+        public int idUsuario;
+        [JsonProperty("idUbicacion")]
+        public int idUbicacion;
+        [JsonProperty("idElemento")]
+        public int idElemento;
         #endregion
 
         #region Getters/Setters
-        public long Id_Reserva
+
+        public int IdUsuario
         {
-            get { return id_Reserva; }
-            set { id_Reserva = value; }
+            get { return idUsuario; }
+            set { idUsuario = value; OnPropertyChanged(); }
         }
-        public long Id_Usuario
+        public int IdUbicacion
         {
-            get { return id_Usuario; }
-            set { id_Usuario = value; }
+            get { return idUbicacion;  }
+            set { idUbicacion = value; OnPropertyChanged(); }
         }
-        public long Id_Empresa
+        public int IdElemento
         {
-            get { return id_Empresa; }
-            set { id_Empresa = value; }
+            get { return idElemento; }
+            set { idUbicacion = value; OnPropertyChanged(); }
         }
         #endregion
     }

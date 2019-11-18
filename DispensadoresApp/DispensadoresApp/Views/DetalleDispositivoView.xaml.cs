@@ -1,5 +1,5 @@
 ﻿using DispensadoresApp.Modelos;
-using DispensadoresApp.ViewModel;
+using DispensadoresApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +14,22 @@ namespace DispensadoresApp.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DetalleDispositivoView : ContentPage
     {
-        public DetalleDispositivoView(ElementoModelo elemento, DispensadorModelo dispensador)
+        DetalleDispositivoViewModel context = new DetalleDispositivoViewModel();
+        public DetalleDispositivoView()
         {
             InitializeComponent();
-            NombreDispensador.Text = dispensador.Nombre;
+            BindingContext = context;
+
+
+           /* NombreDispensador.Text = dispensador.Nombre;
             Distancia.Text = dispensador.Distancia.ToString();
             Nombre.Text = elemento.Nombre;
-            Descripcion.Text = elemento.Descripcion;
+            //Descripcion.Text = elemento.Descripcion;
             IconoGrande.Source = elemento.Path_Imagen;
             iconoTipo.Source = elemento.Path_Imagen;
             //Numero.Text = elemento.Numero.ToString();
-            //Casillero.Text = elemento.Numero.ToString();
-            BindingContext = new DispensadorViewModel();
+            //Casillero.Text = elemento.Numero.ToString();*/
+            
         }
     }
 }

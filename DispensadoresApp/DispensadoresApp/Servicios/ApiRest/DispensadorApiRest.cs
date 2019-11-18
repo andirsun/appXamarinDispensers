@@ -139,7 +139,7 @@ namespace DispensadoresApp.Servicios.ApiRest
                 var gm = new GetMaker();
                 var url = GlobalSettings.BASE_URL + GlobalSettings.LISTADO_EQUIPOS_TIPO_EQUIPO;
                 string[] contenido = new string[1];
-                contenido[0] = tipo.Id_Tipo_Elemento.ToString();
+                //contenido[0] = tipo.Id_Tipo_Elemento.ToString();
                 string finalurl = gm.Replace(url, contenido);
                 var httpResponse = await client.GetAsync(finalurl);
                 if (httpResponse.IsSuccessStatusCode)

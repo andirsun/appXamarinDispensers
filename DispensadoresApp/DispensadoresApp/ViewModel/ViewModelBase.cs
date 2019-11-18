@@ -8,7 +8,7 @@ using DispensadoresApp.Servicios.Navegacion;
 using System.Threading.Tasks;
 
 
-namespace DispensadoresApp.ViewModel
+namespace DispensadoresApp.ViewModels
 {
     public class ViewModelBase : NotificationObject   /////Importar Notifi validate objetc
     {

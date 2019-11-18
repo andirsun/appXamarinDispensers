@@ -1,8 +1,11 @@
 ﻿using DispensadoresApp.Modelos;
 using DispensadoresApp.Models;
+using DispensadoresApp.Servicios;
 using DispensadoresApp.Servicios.ApiRest;
 using DispensadoresApp.Servicios.BaseDatos;
+using DispensadoresApp.Servicios.Geolocalizacion;
 using DispensadoresApp.Views;
+using Newtonsoft.Json;
 using Plugin.Geolocator;
 using Rg.Plugins.Popup.Services;
 using System;
@@ -14,53 +17,63 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace DispensadoresApp.ViewModel
+namespace DispensadoresApp.ViewModels
 {
     public class DispensadorViewModel : ViewModelBase
     {
         #region Atributos 
-        private UsuarioModelo usuario;
+        private string usuario;
+        //private string nombreDispensador;
+        //private string numEquipos;
+        private int numeroTotalEquipos; //el numero de equipos totales que hay en todos los casilleros
         private EmpresaModelo empresa;
-        private List<DispensadorModelo> dispensadores = new List<DispensadorModelo>();
+        private ObservableCollection<DispensadorModelo> dispensadores;
         private List<TipoElementoModelo> tipo_Elemento;
         private List<ElementoModelo> elementos = new List<ElementoModelo>();
         private string nombreElemento;
         private List<ElementoModelo> tiposEquipos = new List<ElementoModelo>();
-        private readonly UsuarioDB servicio_BD_Cliente;
-        
         public DispensadorModelo DispensadorActual { get; set; }
 
     
         #endregion
 
         #region Getters/Setters
-        public UsuarioModelo Usuario
+        
+        public int NumeroTotalEquipos 
+        {
+            get { return numeroTotalEquipos; }
+            set
+            {
+                numeroTotalEquipos = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Usuario
         {
             get { return usuario; }
-            set { usuario = value; }
+            set { usuario = value;
+                OnPropertyChanged();
+            }
         }
-
         public EmpresaModelo Empresa
         {
             get { return empresa; }
             set { empresa = value; }
         }
-
-        public List<DispensadorModelo> Dispensadores
+        public ObservableCollection<DispensadorModelo> Dispensadores
         {
-            get
+            get { return dispensadores; }
+            set
             {
-
-                return dispensadores;
+                dispensadores = value;
+                OnPropertyChanged();
             }
-            set { dispensadores = value; OnPropertyChanged(); }
         }
        
         public string NombreElemento
         {
             get
             {
-
                 return nombreElemento;
             }
             set
@@ -68,16 +81,11 @@ namespace DispensadoresApp.ViewModel
                 nombreElemento = value; OnPropertyChanged();
             }
         }
-
-
-
         public List<TipoElementoModelo> Tipo_Elemento
         {
             get { return tipo_Elemento; }
             set { tipo_Elemento = value; OnPropertyChanged();}
         }
-
-
         public List<ElementoModelo> Elementos
         {
             get { return elementos; }
@@ -87,7 +95,6 @@ namespace DispensadoresApp.ViewModel
                 OnPropertyChanged();
             }
         }
-
         public List<ElementoModelo> TiposEquipos
         {
             get { return tiposEquipos; }
@@ -97,51 +104,17 @@ namespace DispensadoresApp.ViewModel
                 OnPropertyChanged();
             }
         }
-        
-
-
         #endregion
-
-        #region Servicios
-        private readonly DispensadorApiRest servicio_Dispensador;
-        #endregion
-
-        #region Constructor
+        #region Constructores
         public DispensadorViewModel()
         {
-            servicio_Dispensador = new DispensadorApiRest();
-            servicio_BD_Cliente = new UsuarioDB();
-            BusquedaTipoEquipo();
             InicializarCommands();
         }
-
-        public DispensadorViewModel(DispensadorModelo dispensador)
+        public override async Task InitializeAsync(object navigationData)
         {
-            servicio_Dispensador = new DispensadorApiRest();
-            servicio_BD_Cliente = new UsuarioDB();
-            DispensadorActual = dispensador;
-            inicio();
-            //ElementosPorDispensador(dispensador);
-            InicializarCommands();
+            Usuario = (Application.Current.Properties["UserName"].ToString());
+            await listarDispensadores();
         }
-
-        public DispensadorViewModel(ElementoModelo elemento, DispensadorModelo dispensador)
-        {
-            servicio_Dispensador = new DispensadorApiRest();
-            servicio_BD_Cliente = new UsuarioDB();
-            NombreElemento = elemento.Nombre;
-        }
-
-
-        public DispensadorViewModel(UsuarioModelo usuario)
-        {
-            servicio_Dispensador = new DispensadorApiRest();
-            servicio_BD_Cliente = new UsuarioDB();
-            inicio();           
-            
-            InicializarCommands();
-        }
-
         #endregion
 
         #region Inicializar Commands
@@ -150,35 +123,11 @@ namespace DispensadoresApp.ViewModel
            
             //BusquedaTipoEquipoCommand = new Command(async () => await BusquedaTipoEquipo(), () => true);
             DispositivosCommandView = new Command(async () => await DispositivosPage(), () => true);
+            DispensadorCommandView = new Command(async () => await DetalleDispensadorPage(), () => true);
             MapaCommandView = new Command(async () => await MapaPage(), () => true);
             PopUpCommandView = new Command(async () => await PopUpView(), () => true);
             ReservarCommand =  new Command(async () => await Reservar(), () => true);
-        }
-
-        public async Task inicio()
-        {
-            usuario = servicio_BD_Cliente.BuscarUsuarioActual();
-            
-            Dispensadores = await servicio_Dispensador.Lista_Dispensadores(usuario);
-
-            var locator = CrossGeolocator.Current;
-            locator.DesiredAccuracy = 50;
-            var position = await locator.GetPositionAsync();
-            Location locacionUsuario = new Location(position.Latitude, position.Longitude);
-            for (int i = 0; i < Dispensadores.Count; i++)
-            {
-                Location dispensadorLocacion = new Location(Dispensadores[i].Latitud, Dispensadores[i].Longitud);
-                Dispensadores[i].Distancia = Math.Round(Location.CalculateDistance(dispensadorLocacion, locacionUsuario, DistanceUnits.Kilometers), 1);
-            }
-            Dispensadores = Dispensadores.OrderBy(item => item.Distancia).ToList<DispensadorModelo>();
-
-            /*for (int i = 0; i < Dispensadores.Count; i++)
-            {
-                Dispensadores[i] = await Dispensador(Dispensadores[i]);
-            }       */ 
-        }
-
-                
+        }      
         #endregion
 
         #region Commands
@@ -187,13 +136,67 @@ namespace DispensadoresApp.ViewModel
         public Command MapaCommandView { get; set; } 
 
         public Command DetalleDispositivoCommandView { get; set; }
+        public Command DispensadorCommandView { get; set; }
 
         public Command  PopUpCommandView { get; set; }
 
         public Command ReservarCommand { get; set; }
-
-        public Command CancelarCommand { get; set; }
         #endregion
+
+
+        private async Task listarDispensadores()
+        {
+            var idEmpresa = Application.Current.Properties["idEmpresa"];
+            var idUsuario = Application.Current.Properties["UserID"];
+            var url = GlobalSettings.BASE_URL + GlobalSettings.DISPENSADORES_URL + idEmpresa +'/'+ idUsuario;
+            var dispensador = new DispensadorModelo();
+            var getDispensador = new GetService<DispensadorModelo>(url);
+            Tuple<bool, string> ans = await getDispensador.SendRequest(dispensador);
+            if (ans.Item1)
+            {
+                List<DispensadorModelo> listaDispensadores = JsonConvert.DeserializeObject<List<DispensadorModelo>>(ans.Item2);
+                try
+                {
+                    var position = await Geolocation.GetLastKnownLocationAsync();//gt current location
+
+                    if (position != null)
+                    {
+                        var locator = CrossGeolocator.Current;
+                        locator.DesiredAccuracy = 50;
+                        //var position = await locator.GetPositionAsync();
+                        //var position = await Geolocation.GetLastKnownLocationAsync();
+                        Location locacionUsuario = new Location(position.Latitude, position.Longitude);
+                        var numDispensadores = listaDispensadores.Count;
+                        NumeroTotalEquipos = 0;
+                        for (int i = 0; i < numDispensadores; i++)
+                        {
+                            Location dispensadorLocacion = new Location(listaDispensadores[i].Latitud, listaDispensadores[i].Longitud);
+                            listaDispensadores[i].Distancia = Math.Round(Location.CalculateDistance(dispensadorLocacion, locacionUsuario, DistanceUnits.Kilometers), 1);
+                            NumeroTotalEquipos = NumeroTotalEquipos + listaDispensadores[i].NumEquipos;
+                        }
+                        listaDispensadores = listaDispensadores.OrderBy(item => item.Distancia).ToList<DispensadorModelo>();
+                    }
+                }
+                catch (FeatureNotSupportedException fnsEx)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "Tu telefono no tiene gps", "OK");
+                }
+                catch (FeatureNotEnabledException fneEx)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "No tienes encendido el gps", "OK");
+                }
+                catch (PermissionException pEx)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "Debes conceder los permisos para acceder a tu ubicacion", "OK");
+                }
+                catch (Exception ex)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "No pudimos detectar tu ubicacion", "OK");
+                }
+                Dispensadores = new ObservableCollection<DispensadorModelo>(listaDispensadores);//displego la lista de dispensadores en la vista
+            }
+
+        }
 
         /*
         public async Task<DispensadorModelo> Dispensador(DispensadorModelo dispensador)
@@ -306,45 +309,27 @@ namespace DispensadoresApp.ViewModel
             }
         }
         */
-        public async Task BusquedaTipoEquipo()
-        {
-            usuario = servicio_BD_Cliente.BuscarUsuarioActual();
-            Tipo_Elemento = await servicio_Dispensador.Lista_Tipo_Elemento(usuario);
-            for (int i = 0; i < Tipo_Elemento.Count; i++)
-            {
-                Tipo_Elemento[i].Elementos = await servicio_Dispensador.Lista_Equipos_Tipo_Equipo(Tipo_Elemento[i]);
-                Tipo_Elemento[i].TotalDisponibles = Tipo_Elemento[i].Elementos.Count;
-            }
-        }
+      
 
         private async Task DispositivosPage()
         {
-            var paginaActual = Application.Current.MainPage;
-
-            await paginaActual.Navigation.PushAsync(new BusquedaView());
+            await NavigationService.NavigateToAsync<TipoDispositivoViewModel>();
         }
-
-
+        private async Task DetalleDispensadorPage()
+        {
+            await NavigationService.NavigateToAsync<DetalleDispensadorViewModel>(1);
+        }
         private async Task MapaPage()
         {
-            var paginaActual = Application.Current.MainPage;
-            await paginaActual.Navigation.PushAsync(new MapaView());
+            await NavigationService.NavigateToAsync<MapaViewModel>();
         }
-
-
         private async Task PopUpView()
         {
-
             await PopupNavigation.PushAsync(new Reserva(10));
         }
-
         private async Task Reservar()
         {
             await PopupNavigation.Instance.PopAsync();
-        }
-        public override async Task InitializeAsync(object navigationData)
-        {
-            
         }
     }
 }

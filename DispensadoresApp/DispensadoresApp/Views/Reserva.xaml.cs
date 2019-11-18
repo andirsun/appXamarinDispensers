@@ -1,4 +1,4 @@
-﻿using DispensadoresApp.ViewModel;
+﻿using DispensadoresApp.ViewModels;
 using Rg.Plugins.Popup.Pages;
 using System;
 using System.Collections.Generic;
