@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="DispensadoresApp.Views.DetalleDispositivoView"
+             BackgroundImageSource="fondo.png"
+             NavigationPage.HasNavigationBar="False"
+             
+             >
+    <ContentPage.ToolbarItems >
+        <ToolbarItem IconImageSource="user.png"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid VerticalOptions="Center" HorizontalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="2"></RowDefinition>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.ColumnSpan="2" Grid.Row="0" HorizontalOptions="Center" Text="Detalle del dispositivo" FontSize="20" FontAttributes="Bold" TextColor="White"></Label>
+            <BoxView Margin="15,0,15,0" HeightRequest="3" Color="White" Grid.Row="1"  Grid.ColumnSpan="2" Grid.Column="0"></BoxView>
+            
+            <FlexLayout Grid.Column="0" Grid.Row="2" Direction="Column" 
+                        AlignItems="Center" Margin="15"
+                    JustifyContent="SpaceAround">
+                <Label x:Name="NombreDispensador"  TextColor="white" HeightRequest="40" ></Label>
+                <Image Source="dispensadorPeque.png" HeightRequest="100"></Image>
+                <Label Text="Distancia"  TextColor="white" HeightRequest="30" ></Label>
+                <Label x:Name="Distancia" TextColor="white"  HeightRequest="30"></Label>
+                <Image x:Name="IconoGrande" HeightRequest="160"></Image>
+                <Label Text="Este dispositivo se encuentra en la casilla número"  TextColor="white"  HeightRequest="50"></Label>
+                <Label x:Name="Casillero"  TextColor="white" Margin="0,0,0,40"  HeightRequest="30"></Label>
+
+            </FlexLayout>
+
+            <FlexLayout Grid.Column="1" Grid.Row="2" Direction="Column" 
+                        AlignItems="Start"
+                    JustifyContent="SpaceAround">
+                <Label x:Name="Nombre" FontSize="20" FontAttributes="Bold" TextColor="white" HeightRequest="40"></Label>
+                <Label Text="Serial"   FontSize="15" FontAttributes="Bold" TextColor="white" HeightRequest="30" ></Label>
+                <Label x:Name="Serial"  TextColor="white" HeightRequest="30"></Label>
+                <Label Text="Código de barras"  FontSize="15" FontAttributes="Bold" TextColor="white" HeightRequest="35"></Label>
+                <Label x:Name="barras"  TextColor="white" HeightRequest="30"></Label>
+                <Label x:Name="Descripcion" TextColor="White" HeightRequest="50" Margin="0,20,0,0"></Label>
+                <StackLayout BackgroundColor="#0CB7F2" WidthRequest="180">
+                    <FlexLayout  Direction="Row" JustifyContent="SpaceAround" AlignItems="Center">
+                        <Label x:Name="Numero" TextColor="#153249" FontAttributes="Bold"></Label>
+                        <BoxView Color="Black" HeightRequest="4" Margin="0,2,0,9" WidthRequest="10"></BoxView>
+                        <Image x:Name="iconoTipo" HeightRequest="30"></Image>
+                    </FlexLayout>
+                </StackLayout>
+                
+            </FlexLayout>
+
+            <StackLayout BackgroundColor="#153249" Grid.Column="0" Grid.Row="3"  Grid.ColumnSpan="2" HeightRequest="70" Margin="0,0,0,15">
+                <Button Text="Reservar" Command="{Binding PopUpCommandView}"
+                    HorizontalOptions="Center"  Margin="0,5,0,0"
+                    CornerRadius="20" BackgroundColor="#43a559" 
+                    TextColor="White" BorderWidth="3" 
+                    ></Button>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

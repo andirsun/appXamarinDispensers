@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="DispensadoresApp.Views.LoginView"
+             BackgroundImageSource="fondo.png"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.ToolbarItems >
+        <ToolbarItem IconImageSource="user.png"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <FlexLayout Direction="Column" VerticalOptions="StartAndExpand" HorizontalOptions="Center" JustifyContent="SpaceAround">
+            <Image Source="javeriana.png" HeightRequest="80" VerticalOptions="Start"></Image>
+            <Label Text="Servicio de prestamo de equipos" FontSize="20" FontAttributes="Bold" HorizontalTextAlignment="Center" TextColor="white"/>
+            <Entry Placeholder="Nombree" Text="{Binding User_Name}" Margin="80,20,80,0" TextColor="white" PlaceholderColor="White"></Entry>
+            <Entry Placeholder="Contraseña" IsPassword="true" Text="{Binding Password}" Margin="80,20,80,0" TextColor="white" PlaceholderColor="White"></Entry>
+            <Button Text="Login" Command="{Binding LoginCommand}" Margin="100,20,100,0" CornerRadius="20" BorderColor="#153249" BackgroundColor="White" TextColor="#153249" BorderWidth="3"></Button>
+            <Image Source="logo.png" HeightRequest="80" VerticalOptions="End"></Image>
+        </FlexLayout>
+    </ContentPage.Content>
+</ContentPage>

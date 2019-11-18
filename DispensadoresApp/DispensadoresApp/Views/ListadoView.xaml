@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="DispensadoresApp.Views.ListadoView"
+             BackgroundImageSource="fondo.png"
+             NavigationPage.HasNavigationBar="False"
+             >
+    <ContentPage.ToolbarItems >
+        <ToolbarItem IconImageSource="user.png"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid VerticalOptions="Center" HorizontalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="2"></RowDefinition>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="210"/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Image Margin="12" Grid.Column="0" Grid.Row="0" Source="smartphone.png" HeightRequest="60"></Image>
+
+            <FlexLayout Direction="Column" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" Margin="12"
+                        JustifyContent="SpaceAround" AlignItems="Center">
+                <Label Text="Smarthphones Disponibles" TextColor="white" FontSize="20"/>
+            </FlexLayout>
+
+            <BoxView Margin="15,0,12,0" HeightRequest="3" Color="White" Grid.Row="1"  
+                     Grid.ColumnSpan="3" Grid.Column="0"></BoxView>
+            <StackLayout Grid.Column="0" Grid.Row="2" 
+                         Grid.ColumnSpan="3" HorizontalOptions="Center"
+                         Margin="0,30,0,30">
+                <Label Text="Seleccione ir al dispositivo para ver todos los detalles" 
+                        FontSize="23" TextColor="white" Margin="15,15,0,0"/>
+
+            </StackLayout>
+            <FlexLayout Direction="Row" BackgroundColor="#153249" JustifyContent="SpaceAround"
+                        AlignItems="Center" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3">
+                <Label Text="" FontSize="15" TextColor="white"></Label>
+                <Label Text="Nombre" FontSize="15" TextColor="white"></Label>
+                <Label Text="Ubicación" FontSize="15" TextColor="white"></Label>
+            </FlexLayout>
+
+            <ListView x:Name="TipoLista" BackgroundColor="Transparent" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3"  Margin="15,0,15,0"
+                      >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <FlexLayout Direction="Row" JustifyContent="SpaceAround" AlignItems="Center">
+                                <Label Text="{Binding Id_Elemento}" FontSize="15" TextColor="white"></Label>
+                                <Label Text="{Binding Nombre}" FontSize="15" TextColor="white"></Label>
+                                <Label Text="{Binding Serial}" FontSize="15" TextColor="white"></Label>
+                            </FlexLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <StackLayout BackgroundColor="#153249" Grid.Column="0" Grid.Row="5"  Grid.ColumnSpan="3"
+                         HeightRequest="40" Margin="0,0,0,15">
+                <Button Text="Ir al dispositivo" 
+                    Margin="0,5,0,40"
+                    HorizontalOptions="Center"
+                    CornerRadius="20" BackgroundColor="#43a559" 
+                    TextColor="White" BorderWidth="3"
+                    ></Button>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

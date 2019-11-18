@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="DispensadoresApp.Views.MapaView"
+             BackgroundImageSource="fondo.png"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.ToolbarItems >
+        <ToolbarItem IconImageSource="user.png"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid VerticalOptions="StartAndExpand" HorizontalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="2"></RowDefinition>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackLayout HorizontalOptions="Center" Orientation="Horizontal" Grid.Row="0">
+                <Image  Source="mapaIcono.png" ></Image>
+                <Label Margin="0,20,0,0" Text="Ver mapa de estaciones"  FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                
+            </StackLayout>
+            <BoxView  HeightRequest="3" Color="White" Grid.Row="1"></BoxView>
+            
+            <Image Source="mapa.jpg" Grid.Row="2"></Image>
+        </Grid>
+        
+    </ContentPage.Content>
+</ContentPage>
